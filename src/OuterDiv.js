@@ -46,11 +46,11 @@ class MyTable extends React.Component{
             </tbody>
             <tfoot>
                 <tr>
-                    <td colSpan="4" className="textOnRight">CGST @6% on {this.state.sum}(+)</td>
+                    <td colSpan="4" className="textOnRight">CGST @9% on {this.state.sum}(+)</td>
                     <td>{this.state.cGST}</td>
                 </tr>
                 <tr>
-                    <td colSpan="4" className="textOnRight">SGST @6% on {this.state.sum}(+)</td>
+                    <td colSpan="4" className="textOnRight">SGST @9% on {this.state.sum}(+)</td>
                     <td>{this.state.sGST}</td>
                 </tr>
                 <tr>
@@ -69,8 +69,8 @@ class MyTable extends React.Component{
             var total = o.UnitCost * o.Quantity;
             context.state.items[i].Total = total.toFixed(2);
             context.state.sum = parseFloat(context.state.items[i].Total) + parseFloat(isNaN(context.state.sum)?0.00:context.state.sum);
-            context.state.cGST = context.getTax(6, context.state.sum);
-            context.state.sGST = context.getTax(6, context.state.sum);
+            context.state.cGST = context.getTax(9, context.state.sum);
+            context.state.sGST = context.getTax(9, context.state.sum);
             var totalSum = context.state.sum + context.state.cGST + context.state.sGST;
             context.state.totalSum = parseFloat(totalSum.toFixed(2));
             return (
