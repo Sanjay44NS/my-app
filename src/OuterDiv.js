@@ -1,9 +1,10 @@
 import React from 'react';
+import UpperDiv from './UpperDiv';
 class MyTable extends React.Component{
     constructor(props) {
         super(props);
-    
         this.state = {
+        enableIGST: props.enableIGST,
         message: "",
         items: [
             {
@@ -17,6 +18,7 @@ class MyTable extends React.Component{
         sum: 0.00,
         cGST: 0.00,
         sGST: 0.00,
+        iGST: 0.00,
         totalSum: 0.00
         }
     }
@@ -44,24 +46,51 @@ class MyTable extends React.Component{
             <tbody>
                 {this.renderRows()}
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colSpan="4" className="textOnRight">CGST @9% on {this.state.sum}(+)</td>
-                    <td>{this.state.cGST}</td>
-                </tr>
-                <tr>
-                    <td colSpan="4" className="textOnRight">SGST @9% on {this.state.sum}(+)</td>
-                    <td>{this.state.sGST}</td>
-                </tr>
-                <tr>
-                    <td colSpan="4" className="textOnRight">Grand Total:</td>
-                    <td>{this.state.totalSum}</td>
-                </tr>
-                
-            </tfoot>
+            {this.renderTableFooter()}
             </table>
         </div>);
     }
+
+    renderTableFooter(){
+        if(this.state.enableIGST){
+            return (
+                <tfoot>
+                    <tr>
+                        <td colSpan="4" className="textOnRight">IGST @18% on {this.state.sum}(+)</td>
+                        <td>{this.state.iGST}</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="4" className="textOnRight">Grand Total:</td>
+                        <td>{this.state.totalSum}</td>
+                    </tr>
+                </tfoot>
+            );
+        }else{
+            return (
+                <tfoot>
+                    <tr>
+                        <td colSpan="4" className="textOnRight">CGST @9% on {this.state.sum}(+)</td>
+                        <td>{this.state.cGST}</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="4" className="textOnRight">SGST @9% on {this.state.sum}(+)</td>
+                        <td>{this.state.sGST}</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="4" className="textOnRight">Grand Total:</td>
+                        <td>{this.state.totalSum}</td>
+                    </tr>
+                </tfoot>
+            )
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.enableIGST !== this.state.enableIGST) {
+            this.setState({ enableIGST: nextProps.enableIGST });
+        }
+    }
+
     renderRows(){
         var context = this;
         context.state.sum = 0.00;
@@ -69,9 +98,16 @@ class MyTable extends React.Component{
             var total = o.UnitCost * o.Quantity;
             context.state.items[i].Total = total.toFixed(2);
             context.state.sum = parseFloat(context.state.items[i].Total) + parseFloat(isNaN(context.state.sum)?0.00:context.state.sum);
-            context.state.cGST = context.getTax(9, context.state.sum);
-            context.state.sGST = context.getTax(9, context.state.sum);
-            var totalSum = context.state.sum + context.state.cGST + context.state.sGST;
+            if(context.state.enableIGST){
+                context.state.cGST = 0;
+                context.state.sGST = 0;
+                context.state.iGST = context.getTax(18, context.state.sum);
+            }else{
+                context.state.cGST = context.getTax(9, context.state.sum);
+                context.state.sGST = context.getTax(9, context.state.sum);
+                context.state.iGST = 0;
+            }
+            var totalSum = context.state.sum + context.state.cGST + context.state.sGST + context.state.iGST;
             context.state.totalSum = parseFloat(totalSum.toFixed(2));
             return (
             <tr key={"row-"+i}>
@@ -179,117 +215,9 @@ class MyTable extends React.Component{
 function windowPrint(){
     window.print();
 }
-var upperDiv = (<div className="tableWrapper">
-        <div className="noPrint"><button onClick={windowPrint}>
-                print
-            </button></div>
-        <h1>Nature Fabric Enterprises</h1>
-            <table className="tableClass">
-                <caption className="xlargeFont"><strong>Tax Invoice</strong></caption>
-                <thead>
-                    <tr>
-                        <th>
-                            Invoice From
-                        </th>
-                        <th>
-                            Invoice To
-                        </th>
-                        <th>
-                            Customer Information
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <strong>Nature Fabric Enterprises</strong>
-                            <p>
-                                H.no 3-158,
-                            </p>
-                            <p>
-                                Opp Goshala, Ponnari Road, 
-                            </p>
-                            <p>
-                                Adilabad-500 401, 
-                            </p>
-                            <p>
-                                State: Telangana.
-                            </p>
-                        </td>
-                        <td>                           
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td><strong><input placeholder="Company Name"/></strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td><textarea style={{"width":"100%","minHeight":"90px"}}>
-                                        </textarea></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label htmlFor="mobileNum">Reg. Mobile:</label>
-                            <input id="mobileNum"></input></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td rowSpan = "2">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>Customer</th>
-                                        <td><input type="text"/></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Order No.</th>
-                                        <td><input type="text"/></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Invoice</th>
-                                        <td><input type="text"/></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Billing Date:</th>
-                                        <td><input type="date"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            GSTIN:
-                                        </th>
-                                        <td>
-                                            36CIVPS1288P3ZX
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            GSTIN:
-                                        </th>
-                                        <td>
-                                            <input type="text"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        
-                    </tr>
-                </tbody>
-            </table>
-            </div>);
+
+
+
 var termAndCond = (
     <div>
         <h3>Terms And Conditions
@@ -307,12 +235,50 @@ var termAndCond = (
         </ol>
     </div>
 );
-var OuterDiv = function(){
-    return (<div className="outerDiv">
-    {upperDiv}
-    <MyTable/>
-    {termAndCond}
-    </div>
-);
+
+class OuterDiv extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state = {
+            businessState: 'Telangana',
+            clientState: '',
+            enableIGST: true
+        }
+    }
+    stateChangeHandler = (e) =>{
+        console.log(e);
+        console.log(e.target.value);
+        const currentSelectedState = e.target.value;
+        let enableIGST = true;
+        if(this.state.businessState === currentSelectedState){
+            enableIGST = false;
+        }
+        this.setState(
+            {
+                clientState: e.target.value,
+                enableIGST: enableIGST
+            }
+        );
+    }
+     render(){
+        return (<div className="outerDiv">
+            <UpperDiv windowPrint={windowPrint} stateChangeHandler={this.stateChangeHandler}/>
+            <MyTable enableIGST={this.state.enableIGST}/>
+            {termAndCond}
+            </div>
+        );
+     }
+     componentDidMount(){
+        const currentSelectedState = document.getElementById('state').value;
+        let enableIGST = true;
+        if(this.state.businessState === currentSelectedState){
+            enableIGST = false;
+        }
+        this.setState({
+            clientState: currentSelectedState,
+            enableIGST: enableIGST
+        });
+     }
 }
 export default OuterDiv;
