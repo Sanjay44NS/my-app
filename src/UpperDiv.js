@@ -10,7 +10,7 @@ class UpperDiv extends React.Component{
         
         return (<div className="tableWrapper">
         <div className="noPrint"><button onClick={this.windowPrint}>
-                print
+                Print
             </button></div>
         <h1>Nature Fabric Enterprises</h1>
             <table className="tableClass">
