@@ -56,6 +56,10 @@ class MyTable extends React.Component{
             return (
                 <tfoot>
                     <tr>
+                        <td colSpan="4" className="textOnRight">Total</td>
+                        <td>{this.state.sum}</td>
+                    </tr>
+                    <tr>
                         <td colSpan="4" className="textOnRight">IGST @18% on {this.state.sum}(+)</td>
                         <td>{this.state.iGST}</td>
                     </tr>
