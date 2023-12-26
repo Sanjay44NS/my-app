@@ -19,6 +19,9 @@ class MyTable extends React.Component{
         cGST: 0.00,
         sGST: 0.00,
         iGST: 0.00,
+        cGSTPercent: 9,
+        sGSTPercent: 9,
+        iGSTPercent: 18,
         totalSum: 0.00
         }
     }
@@ -60,7 +63,7 @@ class MyTable extends React.Component{
                         <td>{this.state.sum}</td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="textOnRight">IGST @18% on {this.state.sum}(+)</td>
+                        <td colSpan="4" className="textOnRight">IGST @{this.state.iGSTPercent}% on {this.state.sum}(+)</td>
                         <td>{this.state.iGST}</td>
                     </tr>
                     <tr>
@@ -73,11 +76,11 @@ class MyTable extends React.Component{
             return (
                 <tfoot>
                     <tr>
-                        <td colSpan="4" className="textOnRight">CGST @9% on {this.state.sum}(+)</td>
+                        <td colSpan="4" className="textOnRight">CGST @{this.state.cGSTPercent}% on {this.state.sum}(+)</td>
                         <td>{this.state.cGST}</td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="textOnRight">SGST @9% on {this.state.sum}(+)</td>
+                        <td colSpan="4" className="textOnRight">SGST @{this.state.sGSTPercent}% on {this.state.sum}(+)</td>
                         <td>{this.state.sGST}</td>
                     </tr>
                     <tr>
@@ -105,10 +108,10 @@ class MyTable extends React.Component{
             if(context.state.enableIGST){
                 context.state.cGST = 0;
                 context.state.sGST = 0;
-                context.state.iGST = context.getTax(18, context.state.sum);
+                context.state.iGST = context.getTax(context.state.iGSTPercent, context.state.sum);
             }else{
-                context.state.cGST = context.getTax(9, context.state.sum);
-                context.state.sGST = context.getTax(9, context.state.sum);
+                context.state.cGST = context.getTax(context.state.cGSTPercent, context.state.sum);
+                context.state.sGST = context.getTax(context.state.sGSTPercent, context.state.sum);
                 context.state.iGST = 0;
             }
             var totalSum = context.state.sum + context.state.cGST + context.state.sGST + context.state.iGST;
@@ -265,9 +268,26 @@ class OuterDiv extends React.Component{
             }
         );
     }
+
+    isReturnFabricMaterialChangeHandler = (e) => {
+        const isSelected = e.target.checked;
+        if(isSelected){
+            this.setState({
+                sGSTPercent: 6,
+                cGSTPercent: 6,
+                iGSTPercent: 12
+            });
+        }else{
+            this.setState({
+                sGSTPercent: 9,
+                cGSTPercent: 9,
+                iGSTPercent: 18
+            });
+        }
+    }
      render(){
         return (<div className="outerDiv">
-            <UpperDiv windowPrint={windowPrint} stateChangeHandler={this.stateChangeHandler}/>
+            <UpperDiv windowPrint={windowPrint} stateChangeHandler={this.stateChangeHandler} isReturnFabricMaterialChangeHandler={this.isReturnFabricMaterialChangeHandler}/>
             <MyTable enableIGST={this.state.enableIGST}/>
             {termAndCond}
             </div>
