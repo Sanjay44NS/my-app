@@ -5,6 +5,7 @@ class UpperDiv extends React.Component{
         super(props);
         this.windowPrint = props.windowPrint;
         this.stateChangeHandler = props.stateChangeHandler;
+        this.isReturnFabricMaterialChangeHandler = props.isReturnFabricMaterialChangeHandler;
     }
     render(){
         
@@ -61,6 +62,10 @@ class UpperDiv extends React.Component{
                                     <tr>
                                         <td><label htmlFor="mobileNum">Reg. Mobile:</label>
                             <input id="mobileNum"></input></td>
+                                    </tr>
+                                    <tr className="noprint">
+                                        <td><td><label htmlFor="isReturnFabricMaterial">Is Return Fabric Material?</label> 
+  <input id="isReturnFabricMaterial" type="checkbox" onChange={this.isReturnFabricMaterialChangeHandler}> /></td>
                                     </tr>
                                 </tbody>
                             </table>
