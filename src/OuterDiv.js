@@ -19,9 +19,9 @@ class MyTable extends React.Component{
         cGST: 0.00,
         sGST: 0.00,
         iGST: 0.00,
-        cGSTPercent: 9,
-        sGSTPercent: 9,
-        iGSTPercent: 18,
+        cGSTPercent: 6,
+        sGSTPercent: 6,
+        iGSTPercent: 12,
         totalSum: 0.00
         }
     }
